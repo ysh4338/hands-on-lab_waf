@@ -1,0 +1,21 @@
+version: '3'
+services:
+    dvwa:
+      image: docker.io/vulnerables/web-dvwa
+      container_name: dvwa
+      ports:
+        - "4380:80"
+        - "443"
+
+    ips:
+      image: docker.io/linton/docker-snort
+      command: snort -i eth0 -A unsock -l /var/log/snort/ -c /etc/snort/etc/snort.conf
+      volumes:
+        - ./ips/snort-logs:/var/log/snort
+        - ./ips/snort-rules/snort.rules:/etc/snort/rules/local.rules
+      restart: always
+      network_mode: "host"
+      cap_add:
+        - NET_ADMIN
+      privileged: true
+      container_name: ips
